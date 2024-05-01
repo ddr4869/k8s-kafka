@@ -13,6 +13,7 @@ type Config struct {
 	Gin       GinConf
 	DB        DBConf
 	K8sClient *kubernetes.Clientset
+	KubeYaml  string
 }
 
 type GinConf struct {
@@ -47,5 +48,6 @@ func Init() *Config {
 			DBName:     os.Getenv("DB_NAME"),
 		},
 		K8sClient: clientset,
+		KubeYaml:  os.Getenv("KUBE_YAML"),
 	}
 }
