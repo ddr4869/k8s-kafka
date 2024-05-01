@@ -11,11 +11,20 @@ import (
 
 type Config struct {
 	Gin       GinConf
+	DB        DBConf
 	K8sClient *kubernetes.Clientset
 }
 
 type GinConf struct {
 	Mode string
+}
+
+type DBConf struct {
+	DBHost     string
+	DBPort     string
+	DBUser     string
+	DBPassword string
+	DBName     string
 }
 
 func Init() *Config {
@@ -29,6 +38,13 @@ func Init() *Config {
 	return &Config{
 		Gin: GinConf{
 			Mode: os.Getenv("GIN_MODE"),
+		},
+		DB: DBConf{
+			DBHost:     os.Getenv("DB_HOST"),
+			DBPort:     os.Getenv("DB_PORT"),
+			DBUser:     os.Getenv("DB_USER"),
+			DBPassword: os.Getenv("DB_PASSWORD"),
+			DBName:     os.Getenv("DB_NAME"),
 		},
 		K8sClient: clientset,
 	}

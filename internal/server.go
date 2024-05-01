@@ -30,7 +30,7 @@ func NewServerSetUp(cfg *config.Config) (*Server, error) {
 
 	// repository
 	repo := repository.Repository{}
-	err := repo.NewEntClient()
+	err := repo.NewEntClient(cfg.DB)
 	if err != nil {
 		return nil, err
 	}
