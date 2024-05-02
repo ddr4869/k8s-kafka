@@ -1,4 +1,4 @@
-package model
+package k8s
 
 type PodList struct {
 	ListMeta struct {

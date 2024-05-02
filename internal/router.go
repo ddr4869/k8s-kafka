@@ -10,11 +10,13 @@ func RouteSetUp(s *Server) {
 	r := s.router
 	api := r.Group("/api")
 
-	api.GET("/pods", s.GetDefaultsPods)
+	api.GET("/pods", s.GetAllPods)
 	api.GET("/pods/:namespace", s.GetNamespacePodListValid, s.GetNamespacePods)
 	api.GET("/pod/:namespace", s.GetPodValid, s.GetPod)
 	api.GET("/pod/:namespace/log", s.GetPodValid, s.GetPodLog)
 	api.POST("/pods", s.CreatePodValid, s.CreateNamespacePods)
+
+	api.GET("/namespaces", s.GetAllNamespace)
 }
 
 func (s *Server) Start() error {

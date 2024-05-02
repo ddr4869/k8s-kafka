@@ -13,12 +13,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (s *Server) GetDefaultsPods(c *gin.Context) {
-	pods, _ := s.K8sClient.CoreV1().Pods("default").List(context.TODO(), metav1.ListOptions{})
+func (s *Server) GetAllPods(c *gin.Context) {
+	pods, _ := s.K8sClient.CoreV1().Pods("").List(context.TODO(), metav1.ListOptions{})
 	podList, err := dto.V1PodListToJson(pods)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
+	fmt.Println(podList)
 	c.JSON(http.StatusOK, podList)
 }
 
@@ -29,7 +30,9 @@ func (s *Server) GetNamespacePods(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	c.JSON(http.StatusOK, podList)
+	c.JSON(http.StatusOK, dto.NewSuccessResponse(
+		http.StatusOK, "success", podList,
+	))
 }
 
 func (s *Server) GetPod(c *gin.Context) {
@@ -54,20 +57,19 @@ func (s *Server) GetPodLog(c *gin.Context) {
 		fmt.Println("close podLog")
 		podLog.Close()
 	}()
-	// p := make([]byte, 1024)
-	// for {
-	// 	n, err := podLog.Read(p)
-	// 	fmt.Printf("%d bytes read, data: %s\n", n, p[:n])
-	// 	if err == io.EOF {
-	// 		fmt.Println("--end-of-file--")
-	// 		break
-	// 	} else if err != nil {
-	// 		fmt.Println("Oops! Some error occured!", err)
-	// 		break
-	// 	}
-	// }
-	data, _ := io.ReadAll(podLog)
-	c.JSON(http.StatusOK, string(data[:10]))
+	p := make([]byte, 1024)
+	for {
+		n, err := podLog.Read(p)
+		fmt.Printf("%d bytes read, data: %s\n", n, p[:n])
+		if err == io.EOF {
+			fmt.Println("--end-of-file--")
+			break
+		} else if err != nil {
+			fmt.Println("Oops! Some error occured!", err)
+			break
+		}
+	}
+	c.JSON(http.StatusOK, "success")
 }
 
 func (s *Server) CreateNamespacePods(c *gin.Context) {
