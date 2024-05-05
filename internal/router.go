@@ -17,6 +17,8 @@ func RouteSetUp(s *Server) {
 	api.POST("/pods", s.CreatePodValid, s.CreateNamespacePods)
 
 	api.GET("/namespaces", s.GetAllNamespace)
+
+	api.GET("/websocket", s.SocketHandler)
 }
 
 func (s *Server) Start() error {

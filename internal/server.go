@@ -37,12 +37,14 @@ func NewServerSetUp(cfg *config.Config) (*Server, error) {
 	// k8s client
 	config, _ := clientcmd.BuildConfigFromFlags("", "/Users/ieungyu/.kube/config")
 	clientset, _ := kubernetes.NewForConfig(config)
+
 	server := &Server{
 		router:     router,
 		config:     cfg,
 		repository: repo,
 		K8sClient:  clientset,
 	}
+
 	RouteSetUp(server)
 	return server, nil
 }
